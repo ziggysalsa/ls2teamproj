@@ -1,0 +1,19 @@
+%This is the script that will run to do the dtmf filtering
+
+close all;
+clear all;
+
+rec = audiorecorder(3000,16,1);
+
+disp('Press ENTER to start and stop recording');
+pause;
+disp('Recording...');
+record(rec);
+pause;
+stop(rec);
+disp('Processing...');
+
+disp('
+
+y = getaudiodata(rec);
+plot(y);
