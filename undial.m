@@ -29,6 +29,12 @@ addpath(append(currentFolder,'\Testing samples\With noise'));   %add folders to 
 addpath(append(currentFolder, '\Testing samples\Without noise'));   %add folders to file path
 fileName = '1234567890.wav';
 [y,fs] = audioread(fileName);
+y = y - mean(y); 
+ymax = max(y);
+ymin = min(y);
+scale = (ymax - ymin)/2; %scale yvals for consistency to always be around 1
+y = y/scale;
+
 fn = fs/2;
 
 %Plot raw data for testing
@@ -109,4 +115,5 @@ plot(y698);
 subplot(2,1,2);
 pwelch(y698,[],[],[],fs);
 
-send_text_message('319-457-6000', 'T-Mobile', 'TestMsg', 'Test');
+% PUT IN KRUGER'S PHONE # AND CARRIER HERE
+ %send_text_message('319-457-6000', 'T-Mobile', 'Hi Professor Kruger!', 'Test Message');
