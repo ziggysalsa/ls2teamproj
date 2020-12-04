@@ -23,6 +23,7 @@ clear all;
 %-------------------------------------------------------------------------
 
 %Load file
+
 cd C:\Users\zelen\Documents\GitHub\ls2teamproj %cd to my github directory
 currentFolder = pwd;                                               %get curr folder address
 addpath(append(currentFolder,'\Testing samples\With noise'));   %add folders to file path
@@ -41,6 +42,7 @@ fn = fs/2;
 figure;
 subplot(2,1,1);
 plot(y);
+title('Raw data');
 subplot(2,1,2);
 pwelch(y,[],[],[],fs);
 %-------------------------------------------------------------------------
@@ -63,6 +65,7 @@ yf = filtfilt(sos,g,y);
 figure;
 subplot(2,1,1);
 plot(yf);
+title('Reduced noise');
 subplot(2,1,2);
 pwelch(yf,[],[],[],fs);
 %-------------------------------------------------------------------------
@@ -112,8 +115,11 @@ y698 = filtfilt(sos,g,y); %filter signal
 figure;
 subplot(2,1,1);
 plot(y698);
+title('698 Hz');
 subplot(2,1,2);
 pwelch(y698,[],[],[],fs);
 
+
 % PUT IN KRUGER'S PHONE # AND CARRIER HERE
- %send_text_message('319-457-6000', 'T-Mobile', 'Hi Professor Kruger!', 'Test Message');
+ %send_text_message('319-457-6000', 'T-Mobile',...
+ %'Hi Professor Kruger!', 'Test Message');
