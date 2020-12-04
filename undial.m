@@ -23,6 +23,10 @@ clear all;
 %-------------------------------------------------------------------------
 
 %Load file
+cd C:\Users\zelen\Documents\GitHub\ls2teamproj %cd to my github directory
+currentFolder = pwd;                                               %get curr folder address
+addpath(append(currentFolder,'\Testing samples\With noise'));   %add folders to file path
+addpath(append(currentFolder, '\Testing samples\Without noise'));   %add folders to file path
 fileName = '1234567890.wav';
 [y,fs] = audioread(fileName);
 fn = fs/2;
