@@ -108,3 +108,5 @@ subplot(2,1,1);
 plot(y698);
 subplot(2,1,2);
 pwelch(y698,[],[],[],fs);
+
+send_text_message('319-457-6000', 'T-Mobile', 'TestMsg', 'Test');
