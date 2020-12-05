@@ -23,7 +23,12 @@ clear all;
 %-------------------------------------------------------------------------
 
 %Load file
-fileName = 'Testing_samples\Without_noise\1234567890.wav';
+
+cd C:\Users\zelen\Documents\GitHub\ls2teamproj %cd to my github directory
+currentFolder = pwd;                                               %get curr folder address
+addpath(append(currentFolder,'\Testing samples\With noise'));   %add folders to file path
+addpath(append(currentFolder, '\Testing samples\Without noise'));   %add folders to file path
+fileName = '1234567890.wav';
 [y,fs] = audioread(fileName);
 y = y - mean(y); 
 ymax = max(y);
@@ -115,6 +120,14 @@ subplot(2,1,2);
 pwelch(y698,[],[],[],fs);
 
 
+% PUT IN KRUGER'S PHONE # AND CARRIER HERE
+ %send_text_message('319-457-6000', 'T-Mobile',...
+ %'Hi Professor Kruger!', 'Test Message');
+
+
+ 
+ 
+ 
 % Function for separating the signal
 % Input 'data' which should be our cleaned signal 'yf' in this case
 % Spit out a 'signal' matrix which contains each separated signal segment..
