@@ -25,12 +25,19 @@ clear all;
 %Load file
 fileName = 'Testing_samples\Without_noise\1234567890.wav';
 [y,fs] = audioread(fileName);
+y = y - mean(y); 
+ymax = max(y);
+ymin = min(y);
+scale = (ymax - ymin)/2; %scale yvals for consistency to always be around 1
+y = y/scale;
+
 fn = fs/2;
 
 %Plot raw data for testing
 figure;
 subplot(2,1,1);
 plot(y);
+title('Raw data');
 subplot(2,1,2);
 pwelch(y,[],[],[],fs);
 %-------------------------------------------------------------------------
@@ -53,6 +60,7 @@ yf = filtfilt(sos,g,y);
 figure;
 subplot(2,1,1);
 plot(yf);
+title('Reduced noise');
 subplot(2,1,2);
 pwelch(yf,[],[],[],fs);
 %-------------------------------------------------------------------------
@@ -102,6 +110,7 @@ y698 = filtfilt(sos,g,y); %filter signal
 figure;
 subplot(2,1,1);
 plot(y698);
+title('698 Hz');
 subplot(2,1,2);
 pwelch(y698,[],[],[],fs);
 
