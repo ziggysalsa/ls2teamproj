@@ -5,8 +5,7 @@ close all; clear all;
 
 % Needs to run the record audio function here
 input('press Enter to record your dial');
-[y,Fs] = record_Dial();
-
+[y,Fs] = record_audio();
 input('press Enter to play your recording');
 soundsc(y,Fs);
 
