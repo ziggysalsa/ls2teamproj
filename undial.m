@@ -137,18 +137,18 @@ title('1477 Hz');
 %Outputs y. 
 %Inputs: ripple passband, stopband attenuation,
 %normalized freq, frequency to filter, input signal.
-function y = customCheby2(rp,rs,fn,f,x)
-    wp1 = f - 3;    %bandpass freq 1
-    wp2 = f + 3;    %bandpass freq 2
-    ws1 = wp1 - 5;  %bandstop freq 1
-    ws2 = wp2 + 5;  %bandstop freq 2
-    [n,ws] = cheb2ord([wp1 wp2]/fn,[ws1 ws2]/fn, rp,rs); %finds order
-    [z,p,k] = cheby2(n,rs,ws);  %[zeros, poles, gain]
-    [sos,g] = zp2sos(z,p,k);    %second order section conversion
-    y = filtfilt(sos,g,x);      %filters signal
-    %Here [zeros, poles, gain] is used. According to documentation of cheby2,
-    %[b,a] runs into numerical round-off errors. It also says to convert to 
-    %second order section using zp2sos. Looking more into zp2sos, it outputs
-    %the second order section as well as the gain which is equivalent to
-    %transfer function. Similar to [b,a].
-end
+% function y = customCheby2(rp,rs,fn,f,x)
+%     wp1 = f - 3;    %bandpass freq 1
+%     wp2 = f + 3;    %bandpass freq 2
+%     ws1 = wp1 - 5;  %bandstop freq 1
+%     ws2 = wp2 + 5;  %bandstop freq 2
+%     [n,ws] = cheb2ord([wp1 wp2]/fn,[ws1 ws2]/fn, rp,rs); %finds order
+%     [z,p,k] = cheby2(n,rs,ws);  %[zeros, poles, gain]
+%     [sos,g] = zp2sos(z,p,k);    %second order section conversion
+%     y = filtfilt(sos,g,x);      %filters signal
+%     %Here [zeros, poles, gain] is used. According to documentation of cheby2,
+%     %[b,a] runs into numerical round-off errors. It also says to convert to 
+%     %second order section using zp2sos. Looking more into zp2sos, it outputs
+%     %the second order section as well as the gain which is equivalent to
+%     %transfer function. Similar to [b,a].
+% end
