@@ -151,4 +151,5 @@ function y = customCheby2(rp,rs,fn,f,x)
     %second order section using zp2sos. Looking more into zp2sos, it outputs
     %the second order section as well as the gain which is equivalent to
     %transfer function. Similar to [b,a].
+
 end
