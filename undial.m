@@ -6,6 +6,10 @@
 close all;
 clear all;
 
+%Just some thoughts:
+% Ways we could solve this: run findpeaks on each filtered time series with
+% a minimum peak prominence of 0.25 and minimum peak separation... but
+
 %Record sound
 % fs = 8000;
 % rec = audiorecorder(fs,16,1); %sample rate, bit per sample, channel
@@ -124,10 +128,12 @@ y1477 = customCheby2(1,10,fn,1477,y);
 subplot(3,1,3);
 plot(y1477);
 title('1477 Hz');
-%-------------------------------------------------------------------------
+
+
 
 % PUT IN KRUGER'S PHONE # AND CARRIER HERE
  send_text_message('3194576000', 'T-Mobile','Hi Professor Kruger!', 'Test Message');
+ 
  
 %-------------------------------------------------------------------------
 %Functions:
