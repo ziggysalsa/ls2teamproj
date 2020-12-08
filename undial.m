@@ -82,52 +82,6 @@ y770 = customCheby2(1,10,fn,770,y);
 subplot(4,1,2);
 plot(y770);
 title('770 Hz');
-%-------------------------------------------------------------------------
-
-%Filtering 852 Hz
-y852 = customCheby2(1,10,fn,852,y);
-
-%plotting the filtered signal
-subplot(4,1,3);
-plot(y852);
-title('852 Hz');
-%-------------------------------------------------------------------------
-
-%Filtering 941 Hz
-y941 = customCheby2(1,10,fn,941,y);
-
-%plotting the filtered signal
-subplot(4,1,4);
-plot(y941);
-title('941 Hz');
-%-------------------------------------------------------------------------
-
-%Filtering 1209 Hz
-y1209 = customCheby2(1,10,fn,1209,y);
-
-%plotting the filtered signal
-figure;
-subplot(3,1,1);
-plot(y1209);
-title('1209 Hz');
-%-------------------------------------------------------------------------
-
-%Filtering 1336 Hz
-y1336 = customCheby2(1,10,fn,1336,y);
-
-%plotting the filtered signal
-subplot(3,1,2);
-plot(y1336);
-title('1336 Hz');
-%-------------------------------------------------------------------------
-
-%Filtering 1477 Hz
-y1477 = customCheby2(1,10,fn,1477,y);
-
-%plotting the filtered signal
-subplot(3,1,3);
-plot(y1477);
-title('1477 Hz');
 
 
 
