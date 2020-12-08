@@ -27,12 +27,13 @@ clear all;
 %-------------------------------------------------------------------------
 
 %Load file
-cd C:\Users\rojva\Documents\GitHub\ls2teamproj; %cd to my github directory
+cd C:\Users\zelen\Documents\GitHub\ls2teamproj %SASHA
+%cd C:\Users\rojva\Documents\GitHub\ls2teamproj; %cd to my github directory
 currentFolder = pwd;     %get current folder address
 %add folders to file path
-addpath(append(currentFolder,'\Testing samples\With noise'));
-addpath(append(currentFolder, '\Testing samples\Without noise'));
-fileName = '1234567890_n.wav';
+%addpath(append(currentFolder,'\Testing samples\With noise'));
+%addpath(append(currentFolder, '\Testing samples\Without noise'));
+fileName = 'audiocheck.net_dtmf_319256780.wav';
 [y,fs] = audioread(fileName);
 
 fn = fs/2;
@@ -126,8 +127,7 @@ title('1477 Hz');
 %-------------------------------------------------------------------------
 
 % PUT IN KRUGER'S PHONE # AND CARRIER HERE
- %send_text_message('319-457-6000', 'T-Mobile',...
- %'Hi Professor Kruger!', 'Test Message');
+ send_text_message('3194576000', 'T-Mobile','Hi Professor Kruger!', 'Test Message');
  
 %-------------------------------------------------------------------------
 %Functions:
@@ -152,4 +152,44 @@ function y = customCheby2(rp,rs,fn,f,x)
     %the second order section as well as the gain which is equivalent to
     %transfer function. Similar to [b,a].
 
+end
+
+function send_text_message(number,carrier,subject,message)
+% Ke Feng, Sept. 2007
+% Please send comments to: jnfengke@gmail.com
+% $Revision: 1.0.0.0 $  $Date: 2007/09/28 16:23:26 $
+mail = 'matlablablablab@gmail.com';    %Your GMail email address
+password = '8vo$NL8^mJ';          %Your GMail password
+if nargin == 3
+    message = subject;
+    subject = '';
+end
+% Information found from
+% http://www.sms411.net/2006/07/how-to-send-email-to-phone.html
+switch strrep(strrep(lower(carrier),'-',''),'&','')
+    case 'alltel';    emailto = strcat(number,'@message.alltel.com');
+    case 'att';       emailto = strcat(number,'@mmode.com');
+    case 'boost';     emailto = strcat(number,'@myboostmobile.com');
+    case 'cingular';  emailto = strcat(number,'@cingularme.com');
+    case 'cingular2'; emailto = strcat(number,'@mobile.mycingular.com');
+    case 'nextel';    emailto = strcat(number,'@messaging.nextel.com');
+    case 'sprint';    emailto = strcat(number,'@messaging.sprintpcs.com');
+    case 'tmobile';   emailto = strcat(number,'@tmomail.net');
+    case 'verizon';   emailto = strcat(number,'@vtext.com');
+    case 'virgin';    emailto = strcat(number,'@vmobl.com');
+end
+% Then this code will set up the preferences properly:
+setpref('Internet','E_mail',mail);
+setpref('Internet','SMTP_Server','smtp.gmail.com');
+setpref('Internet','SMTP_Username',mail);
+setpref('Internet','SMTP_Password',password);
+% The following four lines are necessary only if you are using GMail as
+% your SMTP server. Delete these lines wif you are using your own SMTP
+% server.
+props = java.lang.System.getProperties;
+props.setProperty('mail.smtp.auth','true');
+props.setProperty('mail.smtp.socketFactory.class', 'javax.net.ssl.SSLSocketFactory');
+props.setProperty('mail.smtp.socketFactory.port','465');
+% Send the email
+sendmail(emailto,subject,message)
 end
