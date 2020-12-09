@@ -6,43 +6,26 @@
 close all;
 clear all;
 
-%Just some thoughts:
-% Ways we could solve this: run findpeaks on each filtered time series with
-% a minimum peak prominence of 0.25 and minimum peak separation... but
-
 %Record sound
-% fs = 8000;
-% rec = audiorecorder(fs,16,1); %sample rate, bit per sample, channel
-% disp('Press ENTER to start and stop recording');
-% pause;
-% disp('Recording...');
-% record(rec);
-% pause;  %Wait for second ENTER to stop recording
-% stop(rec);
-% disp('Processing...');
-% 
-% %For testing purposes
-% disp('Press ENTER to playback recording');
-% pause;
-% play(rec);
-% 
-% %Recording plot
-% y = getaudiodata(rec);
-%-------------------------------------------------------------------------
+fs = 8000;
+rec = audiorecorder(fs,16,1); %Sample rate, bit per sample, channel
+disp('Press ENTER to start and stop recording');
+pause;
+disp('Recording...');
+record(rec);
+pause;  %Wait for second ENTER to stop recording
+stop(rec);
 
-%Load file
-cd C:\Users\zelen\Documents\GitHub\ls2teamproj %SASHA
-%cd C:\Users\rojva\Documents\GitHub\ls2teamproj; %cd to my github directory
-currentFolder = pwd;     %get current folder address
-%add folders to file path
-%addpath(append(currentFolder,'\Testing samples\With noise'));
-%addpath(append(currentFolder, '\Testing samples\Without noise'));
-fileName = 'audiocheck.net_dtmf_319256780.wav';
-[y,fs] = audioread(fileName);
+%For testing purposes
+disp('Processing...');
+play(rec);
 
+%Recording plot
+y = getaudiodata(rec);
+y=y';
 fn = fs/2;
 
-%scale yvals for consistency to always be around 1
+%Scale yvals for consistency to always be around 1
 y = y - mean(y); 
 ymax = max(y);
 ymin = min(y);
@@ -51,50 +34,107 @@ y = y/scale;
 
 %Reducing noise
 y = highpass(y,670,fs);
-y = lowpass(y,1475,fs);
-y = bandstop(y,[960 1180],fs);
-
-%Plot raw data for testing
-figure;
-subplot(2,1,1);
-plot(y);
-title('Raw data');
-subplot(2,1,2);
-pwelch(y,[],[],[],fs);
+y = lowpass(y,1460,fs);
+y = bandstop(y,[980 1180],fs);
 %-------------------------------------------------------------------------
 
-%Filtering 697 Hz
-y697 = customCheby2(1,15,fn,697,y);
+signals = separateSignal(y);
+phoneNo = zeros(1,size(signals,1));
 
-%plotting the filtered signal
-figure;
-subplot(4,1,1);
-plot(y697);
-title('697 Hz');
-% subplot(2,1,2);
-% pwelch(y698,[],[],[],fs);
+for i = 1:size(signals,1)
+    %The filter bank
+    y697 = customCheby2(1,20,fn,697,signals(i,:));
+    y770 = customCheby2(1,20,fn,770,signals(i,:));
+    y852 = customCheby2(1,20,fn,852,signals(i,:));
+    y941 = customCheby2(1,20,fn,941,signals(i,:));
+    y1209 = customCheby2(1,20,fn,1209,signals(i,:));
+    y1336 = customCheby2(1,20,fn,1336,signals(i,:));
+    y1477 = customCheby2(1,20,fn,1477,signals(i,:));
+
+    %Finding the biggest frequency at each key press
+    [~,lmax] = max([max(y697) max(y770) max(y852) max(y941)]);
+    [~,rmax] = max([max(y1209) max(y1336) max(y1477)]);
+
+    %Checking for the biggest frequencies and turning it into a number
+    switch lmax
+        case 1
+            switch rmax
+                case 1
+                    phoneNo(i) = 1;
+                case 2
+                    phoneNo(i) = 2;
+                otherwise
+                    phoneNo(i) = 3;
+            end
+        case 2
+           switch rmax
+                case 1
+                    phoneNo(i) = 4;
+                case 2
+                    phoneNo(i) = 5;
+                otherwise
+                    phoneNo(i) = 6;
+            end 
+        case 3
+            switch rmax
+                case 1
+                    phoneNo(i) = 7;
+                case 2
+                    phoneNo(i) = 8;
+                otherwise
+                    phoneNo(i) = 9;
+            end
+        otherwise
+            switch rmax
+                case 1
+                    phoneNo(i) = '*';
+                case 2
+                    phoneNo(i) = 0;
+                otherwise
+                    phoneNo(i) = '#';
+            end
+    end
+end
+
+%Print out number
+fprintf('Phone Number: %u%u%u-%u%u%u-%u%u%u%u\n',phoneNo);
+
+%Convert into string for send_text_message function
+phoneNo = mat2str(phoneNo);
+phoneNo(phoneNo == ' ') = [];
+phoneNo(phoneNo == '[') = [];
+phoneNo(phoneNo == ']') = [];
+
 %-------------------------------------------------------------------------
-
-%Filtering 770 Hz
-y770 = customCheby2(1,10,fn,770,y);
-
-%plotting the filtered signal
-subplot(4,1,2);
-plot(y770);
-title('770 Hz');
-
-
-
 % PUT IN KRUGER'S PHONE # AND CARRIER HERE
- send_text_message('3194576000', 'T-Mobile','Hi Professor Kruger!', 'Test Message');
- 
- 
+ send_text_message(phoneNo, 'T-Mobile','Hey Sasha',...
+     'Hurray');
+% '3194576000' <- testing phone number
 %-------------------------------------------------------------------------
 %Functions:
 
+% Function for separating the signal
+% Outputs: matrix of signals. Each row is one key press
+% Inputs: the recorded signal
+function signal = separateSignal(data)
+    % find important peaks 
+    [~,locs] = findpeaks(data,'MinPeakDistance',1000,'Threshold',0.1); 
+    minLength = 500;    % set the min length of signal to 2 * 500
+    if locs(1) < minLength                        
+            signal(1,:) = data(1:1000);
+    else
+            signal(1,:) = data(locs(1)-minLength : locs(1)+minLength);
+    end
+
+    % loop over and assign content for each separated signal
+    for i = 2 : length(locs)
+        signal(i,:) = data(locs(i)-minLength : locs(i)+minLength)';
+    end
+end
+
 %Custom Cheby2 filter. Finds minimum required order and applies to filter
 %to filter the signal x.
-%Outputs y. 
+%Outputs: y. 
 %Inputs: ripple passband, stopband attenuation,
 %normalized freq, frequency to filter, input signal.
 function y = customCheby2(rp,rs,fn,f,x)
@@ -106,6 +146,7 @@ function y = customCheby2(rp,rs,fn,f,x)
     [z,p,k] = cheby2(n,rs,ws);  %[zeros, poles, gain]
     [sos,g] = zp2sos(z,p,k);    %second order section conversion
     y = filtfilt(sos,g,x);      %filters signal
+%     y = normalize(y,'range',[-1 1]);    %normalizes values to [-1 1]
     %Here [zeros, poles, gain] is used. According to documentation of cheby2,
     %[b,a] runs into numerical round-off errors. It also says to convert to 
     %second order section using zp2sos. Looking more into zp2sos, it outputs
@@ -114,6 +155,9 @@ function y = customCheby2(rp,rs,fn,f,x)
 
 end
 
+%Function to send text message to the phone number.
+%Outputs: null
+%Inputs: phone number, carrier, subject, message
 function send_text_message(number,carrier,subject,message)
 % Ke Feng, Sept. 2007
 % Please send comments to: jnfengke@gmail.com
