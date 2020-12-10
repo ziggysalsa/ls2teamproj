@@ -107,9 +107,8 @@ phoneNo(phoneNo == ']') = [];
 
 %-------------------------------------------------------------------------
 % PUT IN KRUGER'S PHONE # AND CARRIER HERE
- send_text_message(phoneNo, 'T-Mobile','Hey Sasha',...
+ send_text_message(phoneNo, 'att','Hey Professor Kruger',...
      'Hurray');
-% '3194576000' <- testing phone number
 %-------------------------------------------------------------------------
 %Functions:
 
@@ -118,7 +117,7 @@ phoneNo(phoneNo == ']') = [];
 % Inputs: the recorded signal
 function signal = separateSignal(data)
     % find important peaks 
-    [~,locs] = findpeaks(data,'MinPeakDistance',1000,'Threshold',0.1); 
+    [~,locs] = findpeaks(data,'MinPeakDistance',1000,'Threshold',0.09); 
     minLength = 500;    % set the min length of signal to 2 * 500
     if locs(1) < minLength                        
             signal(1,:) = data(1:1000);
@@ -146,7 +145,6 @@ function y = customCheby2(rp,rs,fn,f,x)
     [z,p,k] = cheby2(n,rs,ws);  %[zeros, poles, gain]
     [sos,g] = zp2sos(z,p,k);    %second order section conversion
     y = filtfilt(sos,g,x);      %filters signal
-%     y = normalize(y,'range',[-1 1]);    %normalizes values to [-1 1]
     %Here [zeros, poles, gain] is used. According to documentation of cheby2,
     %[b,a] runs into numerical round-off errors. It also says to convert to 
     %second order section using zp2sos. Looking more into zp2sos, it outputs
